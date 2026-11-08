@@ -11,7 +11,7 @@ const rows = homeShortlist.map(dish);
 <section class="brief section theme-surface" aria-labelledby="brief-title">
   <div class="wrap">
     <header class="brief-head">
-      <p class="label"><span class="n">04</span>{c.label}</p>
+      <p class="label"><span class="n">04</span>{" "}{c.label}</p>
       <h2 id="brief-title" class="display-xl">{c.title}</h2>
       <p class="brief-hint muted">{c.hint}</p>
     </header>
@@ -19,9 +19,9 @@ const rows = homeShortlist.map(dish);
       {rows.map((d) => (
         <li data-reveal>
           <a class="brief-row" href={`${href(lang, 'menu')}#${d.id}`} data-photo={d.photo ? `/img/plats/${d.photo}-800.webp` : undefined}>
-            <span class="brief-cat">{catName(d.category)}</span>
-            <span class="brief-name">{d.name[lang]}</span>
-            <span class="brief-desc muted">{d.desc?.[lang]}</span>
+            <span class="brief-cat">{catName(d.category)}</span>{" "}
+            <span class="brief-name">{d.name[lang]}</span>{" "}
+            <span class="brief-desc muted">{d.desc?.[lang]}</span>{" "}
             <span class="brief-price num">{formatPrice(d.price, lang)}</span>
             {d.photo && <img class="brief-thumb" src={`/img/plats/${d.photo}-800.webp`} alt="" width="800" height="640" loading="lazy" decoding="async" />}
           </a>

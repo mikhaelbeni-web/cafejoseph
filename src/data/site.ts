@@ -23,6 +23,9 @@ export const site = {
   since: 2024,
   // Opening hours, Paris time. Saturday opens after Shabbat (see src/lib/hours.ts).
   shabbatOffsetMinutes: 30,
+  // TODO(owner): set to true on launch day (final domain, full menu, legal mentions filled in).
+  // While false, every page carries <meta name="robots" content="noindex"> so search engines skip the work-in-progress site.
+  launched: false,
 } as const;
 
 export type Review = { author: string; text: string };

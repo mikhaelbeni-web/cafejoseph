@@ -10,7 +10,7 @@ const m = t.home.maison;
   <div class="wrap">
     <div class="maison-grid">
       <div class="maison-copy">
-        <p class="label"><span class="n">05</span>{m.label}</p>
+        <p class="label"><span class="n">05</span>{" "}{m.label}</p>
         <h2 id="maison-title" class="display-l" data-reveal>{m.title}</h2>
         {m.text.map((p, i) => <p class="maison-p" data-reveal={i + 1}>{p}</p>)}
         <a class="btn" href={href(lang, 'story')}>{t.common.readStory} <span class="arrow" aria-hidden="true">→</span></a>

@@ -32,3 +32,7 @@ la réouverture du samedi soir (havdala + 30 min) et les créneaux du formulaire
 
 Voir les `TODO(owner)` dans `src/data/` : numéro WhatsApp, mention exacte de la téouda,
 carte complète avec prix, mentions légales, relecture de l'hébreu, photos de salle et de terrasse.
+
+Tant que `launched` vaut `false` dans `src/data/site.ts`, toutes les pages portent une balise
+`noindex` : le site est consultable par lien mais Google ne l'indexe pas. Passez-le à `true`
+le jour du lancement, une fois le domaine définitif branché.

@@ -31,7 +31,7 @@ const gallery = [
     <div class="wrap story-chapters">
       {s.chapters.map((c, i) => (
         <article class="chapter" data-reveal>
-          <p class="label"><span class="n">{String(i + 1).padStart(2, '0')}</span>{c.k}</p>
+          <p class="label"><span class="n">{String(i + 1).padStart(2, '0')}</span>{" "}{c.k}</p>
           <h2 class="display-xl">{c.title}</h2>
           <div class="chapter-text">{c.text.map((p) => <p>{p}</p>)}</div>
         </article>

@@ -29,7 +29,7 @@ const bulbs = swags.flatMap(([a, b, c]) => Array.from({ length: 8 }, (_, i) => q
     <div class="hero-copy">
       <p class="hero-eyebrow" data-hero-in>{h.eyebrow}</p>
       <h1 id="hero-title" class="hero-title display-xxl">
-        {h.title.map((line, i) => <span class="line-mask"><span data-hero-line style={`--d:${i}`}>{line}</span></span>)}
+        {h.title.map((line, i) => <>{i > 0 && ' '}<span class="line-mask"><span data-hero-line style={`--d:${i}`}>{line}</span></span></>)}
       </h1>
       <p class="hero-lede lede">{h.lede}</p>
       <div class="hero-live">
