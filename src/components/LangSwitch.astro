@@ -1,0 +1,22 @@
+---
+import { LANGS, ROUTES, HTML_LANG, useT, type Lang, type PageKey } from '../i18n';
+interface Props { lang: Lang; page: PageKey | '404'; class?: string }
+const { lang, page, class: cls = '' } = Astro.props;
+const target = page === '404' ? 'home' : page;
+const t = useT(lang);
+---
+<nav class={`lang ${cls}`} aria-label={t.nav.language}>
+  <ul>
+    {LANGS.map((l) => (
+      <li>
+        <a href={ROUTES[l][target]} hreflang={HTML_LANG[l]} lang={HTML_LANG[l]} aria-current={l === lang ? 'true' : undefined} title={useT(l).name}>{useT(l).short}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+<style>
+  .lang ul { display: flex; gap: 2px; }
+  .lang a { display: inline-grid; place-items: center; min-width: 34px; min-height: 34px; padding: 0 6px; font-size: 13px; font-weight: 560; letter-spacing: .06em; color: var(--fg-soft); border-radius: 99px; transition: color .4s var(--ease), background-color .4s var(--ease); }
+  .lang a[aria-current] { color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  @media (hover: hover) { .lang a:hover { color: var(--fg); } }
+</style>

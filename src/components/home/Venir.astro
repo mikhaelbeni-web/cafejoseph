@@ -1,0 +1,82 @@
+---
+import HoursTable from '../HoursTable.astro';
+import Status from '../Status.astro';
+import { useT, href, type Lang } from '../../i18n';
+import { site } from '../../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const v = t.home.venir;
+---
+<section class="venir section theme-surface" id="venir" aria-labelledby="venir-title">
+  <div class="wrap">
+    <header class="venir-head">
+      <p class="label"><span class="n">08</span>{v.label}</p>
+      <h2 id="venir-title" class="display-xxl">{v.title}</h2>
+    </header>
+    <div class="venir-grid">
+      <div class="venir-hours">
+        <Status text={t.status.loading} class="venir-status" />
+        <h3 class="sr-only">{t.hours.title}</h3>
+        <HoursTable lang={lang} />
+      </div>
+      <div class="venir-where">
+        <address class="venir-address">
+          <span class="venir-street"><bdi>{site.street}</bdi></span>
+          <span><bdi>{site.postalCode} {site.city}</bdi></span>
+          <span class="muted">{t.common.metro}</span>
+        </address>
+        <a class="venir-phone num" href={`tel:${site.phoneE164}`} data-track="appel"><bdi>{site.phoneDisplay}</bdi></a>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={site.directions} target="_blank" rel="noopener" data-track="itineraire">{t.common.directions} <span class="arrow" aria-hidden="true">→</span><span class="sr-only">{t.common.newTab}</span></a>
+          <a class="btn" href={href(lang, 'book')} data-track="reserver-venir">{t.common.book}</a>
+        </div>
+        <div class="venir-more">
+          <a class="link" href={site.uberEats} target="_blank" rel="noopener" data-track="ubereats">{t.common.delivery}<span class="sr-only"> {t.common.newTab}</span></a>
+          <a class="link" href={site.instagram} target="_blank" rel="noopener" data-track="instagram">{site.instagramHandle}<span class="sr-only"> {t.common.newTab}</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="venir-map" data-map={site.mapEmbed}>
+      <div class="venir-map-cover">
+        <button class="btn" type="button" data-map-load>{v.map}</button>
+        <p class="muted">{v.mapNote}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .venir { background: var(--bg-2); }
+  .venir-head { margin-bottom: clamp(40px, 6vw, 88px); }
+  .venir-head h2 { margin-top: 20px; color: var(--accent); transition: color var(--t-theme) var(--ease); }
+  :root[data-time='night'] .venir-head h2 { color: var(--fg); }
+  .venir-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); align-items: start; }
+  .venir-hours :global(.venir-status) { margin: 0 0 24px; font-size: 16px; }
+  .venir-address { font-style: normal; display: grid; gap: 4px; font-size: 18px; margin-bottom: 26px; }
+  .venir-street { font-family: var(--display); font-size: clamp(32px, 3.4vw, 52px); line-height: 1.04; }
+  .venir-phone { display: inline-block; font-family: var(--display); font-size: clamp(26px, 2.4vw, 36px); margin-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .venir-more { display: flex; flex-wrap: wrap; gap: 14px 28px; margin-top: 28px; font-weight: 520; }
+  .venir-map { margin-top: clamp(56px, 7vw, 96px); aspect-ratio: 21 / 8; border-radius: 4px; overflow: hidden; background:
+      repeating-linear-gradient(35deg, transparent 0 46px, var(--line) 46px 47px),
+      repeating-linear-gradient(-55deg, transparent 0 80px, var(--line) 80px 81px), var(--bg-3); position: relative; }
+  .venir-map-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; text-align: center; padding: 24px; }
+  .venir-map-cover p { margin: 0; font-size: 13px; max-width: 42ch; }
+  .venir-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(.25) contrast(1.02); }
+  @media (max-width: 900px) { .venir-grid { grid-template-columns: 1fr; } .venir-map { aspect-ratio: 4 / 3; } }
+</style>
+<script>
+  // Click-to-load map: nothing from Google is loaded until the visitor asks for it.
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((box) => {
+    box.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = box.dataset.map!;
+      f.title = 'Google Maps — Café Joseph, 48 rue de Prony';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      box.querySelector('.venir-map-cover')?.remove();
+      box.appendChild(f);
+      f.focus();
+    });
+  });
+</script>

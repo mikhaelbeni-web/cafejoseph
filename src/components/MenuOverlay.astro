@@ -1,0 +1,105 @@
+---
+import Logo from './Logo.astro';
+import Status from './Status.astro';
+import LangSwitch from './LangSwitch.astro';
+import TimeToggle from './TimeToggle.astro';
+import { useT, href, type Lang, type PageKey } from '../i18n';
+import { site } from '../data/site';
+interface Props { lang: Lang; page: PageKey | '404' }
+const { lang, page } = Astro.props;
+const t = useT(lang);
+const links = [
+  { label: t.nav.home, url: href(lang, 'home'), img: 'table-partagee-vue-ensemble', key: 'home' },
+  { label: t.nav.menu, url: href(lang, 'menu'), img: 'pizza-burratina', key: 'menu' },
+  { label: t.nav.story, url: href(lang, 'story'), img: 'carpaccio-poisson-truffe', key: 'story' },
+  { label: t.nav.book, url: href(lang, 'book'), img: 'carpaccio-saumon-parmesan', key: 'book' },
+  { label: t.nav.visit, url: href(lang, 'home', '#venir'), img: 'tartare-saumon-avocat', key: 'visit' },
+];
+---
+<div class="ov" id="menu-overlay" role="dialog" aria-modal="true" aria-label={t.nav.open} hidden data-overlay>
+  <div class="ov-inner wrap">
+    <div class="ov-top">
+      <a class="ov-logo" href={href(lang, 'home')} aria-label={`Café Joseph, ${t.nav.home}`}><Logo /></a>
+      <button class="ov-close" type="button" data-menu-close>
+        <span>{t.nav.close}</span>
+        <span class="ov-x" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+    <div class="ov-main">
+      <nav class="ov-nav" aria-label={t.nav.open}>
+        <ol>
+          {links.map((l, i) => (
+            <li>
+              <a href={l.url} data-ov-img={l.img} aria-current={l.key === page ? 'page' : undefined}>
+                <span class="ov-n num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="ov-t"><span>{l.label}</span></span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <figure class="ov-figure" aria-hidden="true">
+        {links.map((l, i) => (
+          <img src={`/img/plats/${l.img}-800.webp`} alt="" width="800" height="640" loading="lazy" decoding="async" data-ov-pic={l.img} class:list={{ 'is-on': i === 0 }} />
+        ))}
+      </figure>
+    </div>
+    <div class="ov-foot">
+      <div>
+        <Status variant="long" text={t.status.loading} />
+        <p class="muted"><bdi>{site.street}, {site.postalCode} {site.city}</bdi></p>
+      </div>
+      <div class="ov-contact">
+        <a class="link" href={`tel:${site.phoneE164}`} data-track="appel"><bdi>{site.phoneDisplay}</bdi></a>
+        <a class="link" href={site.instagram} target="_blank" rel="noopener">{site.instagramHandle}</a>
+      </div>
+      <div class="ov-prefs">
+        <LangSwitch lang={lang} page={page} />
+        <TimeToggle lang={lang} withLabel />
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .ov { position: fixed; inset: 0; z-index: 80; background: var(--bg); color: var(--fg); overflow-y: auto; overscroll-behavior: contain; clip-path: inset(0 0 100% 0); transition: clip-path .8s var(--ease), background-color var(--t-theme) var(--ease), color var(--t-theme) var(--ease); }
+  .ov[hidden] { display: block; visibility: hidden; }
+  .ov.is-open { clip-path: inset(0 0 0 0); visibility: visible; }
+  .ov-inner { min-height: 100%; display: grid; grid-template-rows: var(--header) 1fr auto; }
+  .ov-top { display: flex; align-items: center; justify-content: space-between; }
+  .ov-logo { width: clamp(132px, 13vw, 176px); color: var(--accent); }
+  :root[data-time='night'] .ov-logo { color: var(--fg); }
+  .ov-close { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-size: 14px; font-weight: 560; letter-spacing: .04em; }
+  .ov-x { width: 22px; height: 22px; position: relative; }
+  .ov-x i { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: currentColor; transform: rotate(45deg); }
+  .ov-x i + i { transform: rotate(-45deg); }
+  .ov-main { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 6vw; align-items: center; padding-block: 4vh; }
+  .ov-nav ol { display: grid; gap: .4vh; }
+  .ov-nav a { display: flex; align-items: baseline; gap: 22px; padding-block: .6vh; }
+  .ov-n { font-size: 13px; color: var(--gold); letter-spacing: .1em; min-width: 2.2em; }
+  .ov-t { display: block; overflow: hidden; font-family: var(--display); font-size: clamp(44px, 7.2vh, 92px); line-height: 1.02; }
+  .ov-t span { display: block; transform: translateY(105%); transition: transform .9s var(--ease); }
+  .ov.is-open .ov-t span { transform: none; }
+  .ov.is-open li:nth-child(2) .ov-t span { transition-delay: .06s; }
+  .ov.is-open li:nth-child(3) .ov-t span { transition-delay: .12s; }
+  .ov.is-open li:nth-child(4) .ov-t span { transition-delay: .18s; }
+  .ov.is-open li:nth-child(5) .ov-t span { transition-delay: .24s; }
+  .ov-nav a[aria-current] .ov-t { color: var(--gold); }
+  @media (hover: hover) {
+    .ov-nav ol:hover a .ov-t { opacity: .35; transition: opacity .4s var(--ease); }
+    .ov-nav ol:hover a:hover .ov-t { opacity: 1; }
+  }
+  .ov-figure { margin: 0; position: relative; aspect-ratio: 4 / 5; border-radius: 999px 999px 4px 4px; overflow: hidden; background: var(--bg-3); }
+  .ov-figure img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity .7s var(--ease), transform 1.2s var(--ease); filter: var(--photo-filter); }
+  .ov-figure img.is-on { opacity: 1; transform: none; }
+  .ov-foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: end; padding-block: 28px 32px; border-top: 1px solid var(--line); font-size: 15px; }
+  .ov-foot p { margin: 0 0 4px; }
+  .ov-contact { display: grid; gap: 6px; justify-items: start; }
+  .ov-prefs { display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; }
+  @media (max-width: 900px) {
+    .ov-main { grid-template-columns: 1fr; padding-block: 2vh; }
+    .ov-figure { display: none; }
+    .ov-t { font-size: clamp(40px, 11vw, 64px); }
+    .ov-foot { grid-template-columns: 1fr; gap: 18px; }
+    .ov-prefs { justify-content: space-between; }
+  }
+</style>

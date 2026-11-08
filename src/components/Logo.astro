@@ -1,0 +1,13 @@
+---
+// Vector wordmark generated from Gilda Display (scripts/logo.mjs). Inherits currentColor.
+import paths from './LogoPaths.json';
+interface Props { class?: string; label?: string; sub?: boolean }
+const { class: cls = '', label, sub = true } = Astro.props;
+const [, , w] = paths.viewBox.split(' ').map(Number);
+const viewBox = sub ? paths.viewBox : `0 0 ${w} 112`;
+---
+<svg class={`logo ${cls}`} viewBox={viewBox} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} fill="currentColor" focusable="false">
+  <path d={paths.main} />
+  {sub && <path transform={paths.subTransform} d={paths.sub} />}
+  {sub && paths.lines.map((l) => <rect x={l[0]} y={l[1] - 0.9} width={l[2] - l[0]} height="1.8" />)}
+</svg>

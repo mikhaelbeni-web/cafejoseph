@@ -1,0 +1,48 @@
+---
+import Logo from './Logo.astro';
+import Status from './Status.astro';
+import LangSwitch from './LangSwitch.astro';
+import TimeToggle from './TimeToggle.astro';
+import { useT, href, type Lang, type PageKey } from '../i18n';
+interface Props { lang: Lang; page: PageKey | '404' }
+const { lang, page } = Astro.props;
+const t = useT(lang);
+---
+<header class="hd theme-surface" data-header>
+  <div class="hd-inner wrap">
+    <a class="hd-logo" href={href(lang, 'home')} aria-label={`Café Joseph, ${t.nav.home}`}>
+      <Logo />
+    </a>
+    <div class="hd-right">
+      <Status variant="short" class="hd-status" text={t.status.loading} />
+      <LangSwitch lang={lang} page={page} class="hd-lang" />
+      <TimeToggle lang={lang} class="hd-time" />
+      {page !== 'book' && <a class="btn btn--primary btn--small hd-book" href={href(lang, 'book')} data-track="reserver-header">{t.common.bookShort}</a>}
+      <button class="hd-menu" type="button" data-menu-open aria-expanded="false" aria-controls="menu-overlay" aria-label={t.nav.open}>
+        <span class="hd-menu-icon" aria-hidden="true"><i></i><i></i></span>
+        <span class="hd-menu-label">{t.nav.open}</span>
+      </button>
+    </div>
+  </div>
+</header>
+<style>
+  .hd { position: fixed; inset: 0 0 auto; z-index: 50; height: var(--header); color: var(--fg); background: transparent; border-bottom: 1px solid transparent; transition: background-color .5s var(--ease), border-color .5s var(--ease), color var(--t-theme) var(--ease), transform .5s var(--ease); }
+  .hd.is-scrolled { background: color-mix(in srgb, var(--bg) 94%, transparent); border-bottom-color: var(--line); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2); }
+  .hd-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .hd-logo { display: block; width: clamp(132px, 13vw, 176px); color: var(--accent); transition: color var(--t-theme) var(--ease); }
+  :root[data-time='night'] .hd-logo { color: var(--fg); }
+  .hd-right { display: flex; align-items: center; gap: clamp(14px, 1.6vw, 26px); }
+  .hd :global(.hd-status) { font-size: 13px; margin: 0; transition: opacity .5s var(--ease); }
+  :global(html[data-page='home']) .hd:not(.is-scrolled) :global(.hd-status) { opacity: 0; pointer-events: none; }
+  .hd-menu { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 2px; font-size: 14px; font-weight: 560; letter-spacing: .04em; }
+  .hd-menu-icon { width: 26px; height: 12px; display: grid; align-content: space-between; }
+  .hd-menu-icon i { display: block; height: 1.5px; background: currentColor; transition: transform .5s var(--ease); transform-origin: right; }
+  .hd-menu-icon i:last-child { width: 70%; justify-self: end; }
+  @media (hover: hover) { .hd-menu:hover .hd-menu-icon i:last-child { transform: scaleX(1.43); } }
+  @media (max-width: 1100px) { .hd :global(.hd-status [data-status-text]) { display: none; } .hd :global(.hd-status) { gap: 0; } }
+  @media (max-width: 900px) {
+    .hd :global(.hd-lang), .hd :global(.hd-time), .hd :global(.hd-status) { display: none; }
+    .hd-menu-label { display: none; }
+  }
+  @media (max-width: 420px) { .hd-inner { gap: 12px; } .hd-book { padding: 0 14px; } }
+</style>

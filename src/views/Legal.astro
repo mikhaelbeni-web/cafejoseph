@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { useT, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const l = t.legalPage;
+const mark = (s: string) => s.replace(/\[([^\]]+)\]/g, '<mark>$1</mark>');
+---
+<Base lang={lang} page="legal" title={t.meta.legal.title} description={t.meta.legal.description}>
+  <PageHero label={l.label} title={l.title} />
+  <div class="wrap legal">
+    {l.sections.map((s, i) => (
+      <section class="legal-sec">
+        <p class="num legal-n">{String(i + 1).padStart(2, '0')}</p>
+        <h2 class="display-m">{s.title}</h2>
+        <ul>{s.lines.map((line) => <li set:html={mark(line)} />)}</ul>
+      </section>
+    ))}
+  </div>
+</Base>
+<style>
+  .legal { padding-bottom: var(--section); display: grid; gap: 0; max-width: 1000px; margin-inline: 0; }
+  .legal-sec { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 8px 24px; padding: 32px 0; border-top: 1px solid var(--line); }
+  .legal-n { grid-row: span 2; margin: 0; font-size: 13px; letter-spacing: .2em; color: var(--gold); padding-top: 8px; }
+  .legal ul { display: grid; gap: 6px; color: var(--fg-soft); }
+  .legal :global(mark) { background: color-mix(in srgb, var(--gold) 20%, transparent); color: var(--fg); padding: 0 4px; border-radius: 2px; }
+</style>

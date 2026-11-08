@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import MenuOverlay from '../components/MenuOverlay.astro';
+import Footer from '../components/Footer.astro';
+import HebrewFonts from '../components/HebrewFonts.astro';
+import { LANGS, ROUTES, HTML_LANG, OG_LOCALE, useT, type Lang, type PageKey } from '../i18n';
+import { site } from '../data/site';
+import gildaUrl from '@fontsource/gilda-display/files/gilda-display-latin-400-normal.woff2?url';
+import instrumentUrl from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
+
+interface Props {
+  lang: Lang;
+  page: PageKey | '404';
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: Record<string, unknown>;
+}
+const { lang, page, title, description, image = '/og/cafe-joseph.jpg', jsonLd } = Astro.props;
+const t = useT(lang);
+const base = site.url;
+const path = page === '404' ? null : ROUTES[lang][page];
+const canonical = path ? new URL(path, base).href : undefined;
+const alternates = page === '404' ? [] : LANGS.map((l) => ({ l, href: new URL(ROUTES[l][page], base).href }));
+---
+<!doctype html>
+<html lang={HTML_LANG[lang]} dir={t.dir} data-time="day" data-page={page}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {alternates.map((a) => <link rel="alternate" hreflang={HTML_LANG[a.l]} href={a.href} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={alternates[0].href} />}
+    {page === '404' && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#f4eee3" data-theme-color />
+    <link rel="preload" href={gildaUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={new URL(image, base).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    {LANGS.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l]} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline>
+      // Before first paint: day or night, following Paris time (or the visitor's choice for this visit).
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion-ok');
+        var forced = null;
+        try { forced = sessionStorage.getItem('cj-time'); } catch (e) {}
+        var h = 12;
+        try { h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', hour: '2-digit', hourCycle: 'h23' }).format(new Date()); } catch (e) {}
+        d.dataset.time = forced || (h >= 19 || h < 6 ? 'night' : 'day');
+        var m = document.querySelector('[data-theme-color]');
+        if (m) m.setAttribute('content', d.dataset.time === 'night' ? '#0e1b1f' : '#f4eee3');
+      })();
+    </script>
+    {lang === 'he' && <HebrewFonts />}
+  </head>
+  <body>
+    <a class="skip" href="#main">{t.nav.skip}</a>
+    <Header lang={lang} page={page} />
+    <MenuOverlay lang={lang} page={page} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} page={page} />
+    <script>
+      import '../scripts/theme';
+      import '../scripts/status';
+      import '../scripts/header';
+      import '../scripts/reveal';
+      import '../scripts/analytics';
+    </script>
+  </body>
+</html>

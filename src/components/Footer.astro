@@ -1,0 +1,69 @@
+---
+import Logo from './Logo.astro';
+import HoursTable from './HoursTable.astro';
+import LangSwitch from './LangSwitch.astro';
+import { useT, href, type Lang, type PageKey } from '../i18n';
+import { site } from '../data/site';
+interface Props { lang: Lang; page: PageKey | '404' }
+const { lang, page } = Astro.props;
+const t = useT(lang);
+---
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div class="ft-intro">
+        <p class="ft-tag">{t.footer.tagline}</p>
+        <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-footer">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div>
+        <h2 class="label bare">{t.footer.visit}</h2>
+        <address>
+          <bdi>{site.street}</bdi><br /><bdi>{site.postalCode} {site.city}</bdi><br />
+          <span class="ft-soft">{t.common.metro}</span><br />
+          <a class="link" href={`tel:${site.phoneE164}`} data-track="appel"><bdi>{site.phoneDisplay}</bdi></a>
+        </address>
+      </div>
+      <div>
+        <h2 class="label bare">{t.footer.hours}</h2>
+        <HoursTable lang={lang} compact />
+      </div>
+      <div>
+        <h2 class="label bare">{t.footer.explore}</h2>
+        <ul class="ft-links">
+          <li><a class="link" href={href(lang, 'menu')}>{t.nav.menu}</a></li>
+          <li><a class="link" href={href(lang, 'story')}>{t.nav.story}</a></li>
+          <li><a class="link" href={href(lang, 'book')}>{t.nav.book}</a></li>
+          <li><a class="link" href={site.directions} target="_blank" rel="noopener" data-track="itineraire">{t.common.directions}</a></li>
+        </ul>
+        <h2 class="label bare ft-follow">{t.footer.follow}</h2>
+        <ul class="ft-links">
+          <li><a class="link" href={site.instagram} target="_blank" rel="noopener" data-track="instagram">Instagram</a></li>
+          <li><a class="link" href={site.uberEats} target="_blank" rel="noopener" data-track="ubereats">Uber Eats</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-mark" aria-hidden="true"><Logo sub={false} /></div>
+    <div class="ft-bottom">
+      <p>{t.footer.rights}</p>
+      <a class="link" href={href(lang, 'legal')}>{t.nav.legal}</a>
+      <LangSwitch lang={lang} page={page} />
+    </div>
+  </div>
+</footer>
+<style>
+  .ft { --fg: #f4eee3; --fg-soft: #a9b8b5; --line: rgba(201, 166, 107, .24); --accent: #c9a66b; --accent-fg: #0e1b1f; --gold: #c9a66b; --bg: #0e1b1f;
+    background: #0e1b1f; color: var(--fg); padding-top: clamp(80px, 10vw, 140px); position: relative; overflow: hidden; }
+  .ft-grid { display: grid; grid-template-columns: 1.3fr 1fr 1.2fr 1fr; gap: clamp(28px, 4vw, 64px); align-items: start; }
+  .ft-tag { font-family: var(--display); font-size: clamp(26px, 2.4vw, 36px); line-height: 1.1; margin-bottom: 28px; max-width: 16ch; }
+  .ft h2 { margin-bottom: 18px; }
+  .ft address { font-style: normal; line-height: 1.8; }
+  .ft-soft { color: var(--fg-soft); }
+  .ft-links { display: grid; gap: 8px; justify-items: start; }
+  .ft-follow { margin-top: 28px; }
+  .ft-mark { color: #c9a66b; margin-top: clamp(72px, 9vw, 140px); opacity: .95; }
+  .ft-mark :global(svg) { width: 100%; height: auto; }
+  .ft-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding-block: 28px 36px; margin-top: clamp(24px, 3vw, 40px); border-top: 1px solid var(--line); font-size: 14px; color: var(--fg-soft); }
+  .ft-bottom p { margin: 0; margin-inline-end: auto; }
+  @media (max-width: 1000px) { .ft-grid { grid-template-columns: 1fr 1fr; } .ft-intro { grid-column: 1 / -1; } }
+  @media (max-width: 600px) { .ft-grid { grid-template-columns: 1fr; } }
+</style>

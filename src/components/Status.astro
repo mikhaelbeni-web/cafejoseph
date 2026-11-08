@@ -1,0 +1,8 @@
+---
+// Live "open now" pill. Filled in the browser by scripts/status.ts (Paris time, Shabbat aware).
+interface Props { variant?: 'long' | 'short'; class?: string; text: string }
+const { variant = 'long', class: cls = '', text } = Astro.props;
+---
+<p class={`status ${cls}`} data-status={variant} role="status" aria-live="polite">
+  <span class="dot" aria-hidden="true"></span><span data-status-text>{text}</span>
+</p>

@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { useT, href, type Lang } from '../i18n';
+import { menu, menuIsDraft, formatPrice } from '../data/menu';
+import { site } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const m = t.menuPage;
+const menuLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Menu',
+  name: `${site.name} — ${m.label}`,
+  inLanguage: lang,
+  hasMenuSection: menu.map((c) => ({
+    '@type': 'MenuSection',
+    name: c.name[lang],
+    hasMenuItem: c.items.map((d) => ({
+      '@type': 'MenuItem',
+      name: d.name[lang],
+      ...(d.desc ? { description: d.desc[lang] } : {}),
+      ...(d.price !== null ? { offers: { '@type': 'Offer', price: d.price, priceCurrency: 'EUR' } } : {}),
+      ...(d.tags?.includes('veg') ? { suitableForDiet: 'https://schema.org/VegetarianDiet' } : {}),
+    })),
+  })),
+};
+---
+<Base lang={lang} page="menu" title={t.meta.menu.title} description={t.meta.menu.description} jsonLd={menuLd}>
+  <PageHero label={m.label} title={m.title} lede={m.lede}>
+    <div class="btn-row">
+      <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-carte">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn" href={site.uberEats} target="_blank" rel="noopener" data-track="ubereats">{t.common.delivery}<span class="sr-only"> {t.common.newTab}</span></a>
+    </div>
+  </PageHero>
+
+  <div class="carte-bar theme-surface" data-carte-bar>
+    <div class="wrap carte-bar-inner">
+      <nav class="carte-cats" aria-label={m.categories}>
+        <ul>
+          {menu.map((c) => <li><a href={`#${c.id}`} data-cat-link={c.id}>{c.name[lang]}</a></li>)}
+        </ul>
+      </nav>
+      <div class="carte-filters" role="group" aria-label={m.filterLabel}>
+        <button type="button" data-filter="all" aria-pressed="true">{m.filters.all}</button>
+        <button type="button" data-filter="veg" aria-pressed="false">{m.filters.veg}</button>
+        <button type="button" data-filter="signature" aria-pressed="false">{m.filters.signature}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap carte-body">
+    {menuIsDraft && <p class="carte-draft">{m.draft}</p>}
+    <div data-cursor-list>
+      {menu.map((c, ci) => (
+        <section class="cat" id={c.id} aria-labelledby={`h-${c.id}`} data-cat>
+          <header class="cat-head">
+            <span class="num cat-n">{String(ci + 1).padStart(2, '0')}</span>
+            <h2 id={`h-${c.id}`} class="display-l">{c.name[lang]}</h2>
+          </header>
+          <ul class="dishes">
+            {c.items.map((d) => (
+              <li class="dish" id={d.id} data-tags={(d.tags ?? []).join(' ')} data-photo={d.photo ? `/img/plats/${d.photo}-800.webp` : undefined}>
+                <div class="dish-line">
+                  <h3 class="dish-name">{d.name[lang]}</h3>
+                  {d.price !== null && <span class="dish-dots" aria-hidden="true"></span>}
+                  {d.price !== null && <span class="dish-price num">{formatPrice(d.price, lang)}</span>}
+                </div>
+                {d.desc && <p class="dish-desc muted">{d.desc[lang]}</p>}
+                {d.tags && d.tags.length > 0 && (
+                  <p class="dish-tags">{d.tags.map((tag) => <span class:list={['tag', { 'tag--signature': tag === 'signature' }]}>{t.common.tags[tag]}</span>)}</p>
+                )}
+                {d.photo && <img class="dish-thumb" src={`/img/plats/${d.photo}-800.webp`} alt="" width="800" height="640" loading="lazy" decoding="async" />}
+              </li>
+            ))}
+          </ul>
+          <p class="cat-empty muted" hidden>{m.empty}</p>
+        </section>
+      ))}
+    </div>
+
+    <ul class="carte-notes muted">
+      {m.notes.map((n) => <li>{n}</li>)}
+    </ul>
+  </div>
+
+  <section class="carte-delivery">
+    <div class="wrap carte-delivery-inner">
+      <h2 class="display-l">{m.deliveryTitle}</h2>
+      <p class="lede">{m.deliveryText}</p>
+      <a class="btn btn--primary" href={site.uberEats} target="_blank" rel="noopener" data-track="ubereats">{t.common.delivery} <span class="arrow" aria-hidden="true">→</span><span class="sr-only">{t.common.newTab}</span></a>
+    </div>
+  </section>
+  <div class="cursor-media" aria-hidden="true" data-cursor-media><img alt="" width="800" height="640" decoding="async" /></div>
+</Base>
+
+<style>
+  .carte-bar { position: sticky; top: var(--header); z-index: 30; background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-block: 1px solid var(--line); }
+  .carte-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 60px; }
+  .carte-cats { overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(90deg, #000 85%, transparent); }
+  .carte-cats::-webkit-scrollbar { display: none; }
+  .carte-cats ul { display: flex; gap: 4px; }
+  .carte-cats a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 99px; font-size: 14px; font-weight: 520; white-space: nowrap; color: var(--fg-soft); transition: color .3s var(--ease), background-color .3s var(--ease); }
+  .carte-cats a.is-active { color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  .carte-filters { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 99px; flex: none; }
+  .carte-filters button { min-height: 36px; padding: 0 14px; border-radius: 99px; font-size: 13px; font-weight: 560; color: var(--fg-soft); transition: color .3s var(--ease), background-color .3s var(--ease); }
+  .carte-filters button[aria-pressed='true'] { background: var(--accent); color: var(--accent-fg); }
+
+  .carte-body { padding-block: clamp(40px, 6vw, 80px) var(--section); }
+  .carte-draft { border: 1px dashed var(--line); border-radius: 4px; padding: 14px 18px; font-size: 14px; color: var(--fg-soft); max-width: 760px; margin-bottom: clamp(32px, 5vw, 64px); }
+  .cat { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(24px, 4vw, 72px); padding-block: clamp(40px, 5vw, 72px); border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header) + 80px); }
+  .cat-head { position: sticky; top: calc(var(--header) + 96px); align-self: start; display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 14px; }
+  .cat-n { font-size: 13px; letter-spacing: .2em; color: var(--gold); }
+  .cat-count { font-size: 14px; }
+  .dishes { display: grid; gap: 0; }
+  .dish { position: relative; padding: 18px 0 20px; border-bottom: 1px solid var(--line); scroll-margin-top: calc(var(--header) + 90px); transition: opacity .3s var(--ease); }
+  .dish:target { animation: flash 2s var(--ease); }
+  @keyframes flash { 0%, 40% { background: color-mix(in srgb, var(--gold) 14%, transparent); } }
+  .dish[hidden] { display: none; }
+  .dish-line { display: flex; align-items: baseline; gap: 12px; }
+  .dish-name { font-size: clamp(22px, 1.9vw, 28px); line-height: 1.15; }
+  .dish-dots { flex: 1; border-bottom: 1px dotted color-mix(in srgb, var(--fg) 30%, transparent); transform: translateY(-5px); min-width: 24px; }
+  .dish-price { font-family: var(--display); font-size: clamp(20px, 1.6vw, 24px); }
+  .dish-desc { margin: 6px 0 0; font-size: 15px; max-width: 60ch; }
+  .dish-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 0; }
+  .dish-thumb { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .dish[data-photo] { cursor: zoom-in; }
+  }
+  .carte-notes { display: grid; gap: 6px; font-size: 14px; margin-top: 48px; }
+  .carte-delivery { background: var(--bg-2); padding-block: clamp(72px, 9vw, 140px); }
+  .carte-delivery-inner { display: grid; justify-items: start; gap: 18px; }
+  .carte-delivery h2 { color: var(--accent); }
+  :root[data-time='night'] .carte-delivery h2 { color: var(--fg); }
+  @media (max-width: 900px) {
+    .carte-bar-inner { flex-direction: column; align-items: stretch; gap: 8px; padding-block: 8px; }
+    .carte-filters { align-self: start; }
+    .cat { grid-template-columns: 1fr; }
+    .cat-head { position: static; }
+    .dish[data-photo] { padding-inline-end: 72px; }
+    .dish-thumb { display: block; position: absolute; inset-inline-end: 0; top: 18px; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; filter: var(--photo-filter); }
+  }
+</style>
+<script>
+  import '../scripts/cursor';
+  import '../scripts/carte';
+</script>
