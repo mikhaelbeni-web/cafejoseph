@@ -1,0 +1,69 @@
+---
+import { useT, href, type Lang } from '../../i18n';
+import { dish, homeShortlist, formatPrice, menu } from '../../data/menu';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const c = t.home.carte;
+const catName = (id: string) => menu.find((m) => m.id === id)!.name[lang];
+const rows = homeShortlist.map(dish);
+---
+<section class="brief section theme-surface" aria-labelledby="brief-title">
+  <div class="wrap">
+    <header class="brief-head">
+      <p class="label"><span class="n">04</span>{" "}{c.label}</p>
+      <h2 id="brief-title" class="display-xl">{c.title}</h2>
+      <p class="brief-hint muted">{c.hint}</p>
+    </header>
+    <ul class="brief-list" data-cursor-list>
+      {rows.map((d) => (
+        <li data-reveal>
+          <a class="brief-row" href={`${href(lang, 'menu')}#${d.id}`} data-photo={d.photo ? `/img/plats/${d.photo}-800.webp` : undefined}>
+            <span class="brief-cat">{catName(d.category)}</span>{" "}
+            <span class="brief-name">{d.name[lang]}</span>{" "}
+            <span class="brief-desc muted">{d.desc?.[lang]}</span>{" "}
+            <span class="brief-price num">{formatPrice(d.price, lang)}</span>
+            {d.photo && <img class="brief-thumb" src={`/img/plats/${d.photo}-800.webp`} alt="" width="800" height="640" loading="lazy" decoding="async" />}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="brief-foot">
+      <p class="muted">{c.note}</p>
+      <a class="btn btn--primary" href={href(lang, 'menu')}>{t.common.fullMenu} <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <div class="cursor-media" aria-hidden="true" data-cursor-media><img alt="" width="800" height="640" decoding="async" /></div>
+</section>
+
+<style>
+  .brief-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 22px 40px; margin-bottom: clamp(40px, 6vw, 80px); }
+  .brief-head .label { grid-column: 1 / -1; }
+  .brief-hint { margin: 0; font-size: 14px; }
+  .brief-list { border-top: 1px solid var(--line); }
+  .brief-row { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1fr) 90px; align-items: baseline; gap: 24px; padding: clamp(18px, 2vw, 28px) 0; border-bottom: 1px solid var(--line); position: relative; transition: border-color var(--t-theme) var(--ease); }
+  .brief-cat { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .brief-name { font-family: var(--display); font-size: clamp(28px, 3.2vw, 48px); line-height: 1.02; transition: transform .6s var(--ease), opacity .4s var(--ease); }
+  .brief-desc { font-size: 15px; line-height: 1.5; transition: opacity .4s var(--ease); }
+  .brief-price { font-family: var(--display); font-size: clamp(22px, 2vw, 30px); text-align: end; }
+  .brief-thumb { display: none; }
+  .brief-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; margin-top: 40px; }
+  .brief-foot p { margin: 0; }
+  @media (hover: hover) and (pointer: fine) {
+    .brief-list:hover .brief-row { opacity: .4; }
+    .brief-list:hover .brief-row:hover { opacity: 1; }
+    .brief-row { transition: opacity .4s var(--ease), border-color var(--t-theme) var(--ease); }
+    .brief-row:hover .brief-name { transform: translateX(14px); }
+    :global([dir='rtl']) .brief-row:hover .brief-name { transform: translateX(-14px); }
+  }
+  @media (hover: none), (pointer: coarse), (max-width: 900px) {
+    .brief-hint { display: none; }
+    .brief-row { grid-template-columns: minmax(0, 1fr) 72px; grid-template-areas: 'cat thumb' 'name thumb' 'desc thumb' 'price thumb'; gap: 6px 18px; align-items: start; }
+    .brief-cat { grid-area: cat; }
+    .brief-name { grid-area: name; font-size: 28px; }
+    .brief-desc { grid-area: desc; font-size: 14px; }
+    .brief-price { grid-area: price; text-align: start; font-size: 22px; }
+    .brief-thumb { display: block; grid-area: thumb; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; align-self: center; filter: var(--photo-filter); }
+    .brief-head { grid-template-columns: 1fr; }
+  }
+</style>

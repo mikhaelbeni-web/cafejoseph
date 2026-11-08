@@ -1,0 +1,48 @@
+---
+import { useT, type Lang } from '../../i18n';
+import { site, reviews } from '../../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const a = t.home.avis;
+const [first, ...rest] = reviews;
+---
+<section class="avis section theme-surface" aria-labelledby="avis-title">
+  <div class="wrap">
+    <header class="avis-head">
+      <p class="label"><span class="n">07</span>{" "}{a.label}</p>
+      <h2 id="avis-title" class="sr-only">{a.title}</h2>
+    </header>
+    <figure class="avis-main" data-reveal>
+      <blockquote lang="fr"><p>« {first.text} »</p></blockquote>
+      <figcaption><span>{first.author}</span><span class="muted">{a.source}</span></figcaption>
+    </figure>
+    <ul class="avis-list">
+      {rest.map((r, i) => (
+        <li data-reveal={i}>
+          <figure>
+            <blockquote lang="fr"><p>« {r.text} »</p></blockquote>
+            <figcaption><span>{r.author}</span><span class="muted">{a.source}</span></figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+    <a class="link avis-all" href={site.googleReviews} target="_blank" rel="noopener" data-track="avis-google">{a.all} <span class="sr-only">{t.common.newTab}</span></a>
+  </div>
+</section>
+
+<style>
+  .avis-head { margin-bottom: clamp(32px, 4vw, 56px); }
+  .avis-main { margin: 0 0 clamp(56px, 7vw, 110px); max-width: 1180px; }
+  .avis-main blockquote { margin: 0; }
+  .avis-main p { font-family: var(--display); font-size: clamp(34px, 4.6vw, 76px); line-height: 1.04; letter-spacing: -.01em; margin-bottom: 28px; text-wrap: balance; }
+  figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; font-weight: 560; letter-spacing: .04em; }
+  .avis-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 2.4vw, 36px); }
+  .avis-list li { border-top: 1px solid var(--line); padding-top: 22px; transition: border-color var(--t-theme) var(--ease); }
+  .avis-list figure { margin: 0; display: grid; gap: 18px; height: 100%; align-content: space-between; }
+  .avis-list blockquote { margin: 0; }
+  .avis-list p { font-size: 17px; line-height: 1.55; margin: 0; }
+  .avis-all { display: inline-block; margin-top: 44px; font-weight: 560; }
+  @media (max-width: 1000px) { .avis-list { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .avis-list { grid-template-columns: 1fr; } }
+</style>

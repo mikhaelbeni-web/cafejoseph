@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Plate from '../components/Plate.astro';
+import { useT, href, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const n = t.notFound;
+---
+<Base lang={lang} page="404" title={t.meta.notFound.title} description={t.meta.notFound.description}>
+  <section class="nf wrap">
+    <div>
+      <p class="label">{n.label}</p>
+      <h1 class="display-xl nf-title">{n.title}</h1>
+      <p class="lede">{n.text}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href={href(lang, 'home')}>{n.back} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href={href(lang, 'menu')}>{t.common.seeMenu}</a>
+      </div>
+    </div>
+    <div class="nf-plate" aria-hidden="true"><Plate name="salade-thon-oeuf-poche" alt="" sizes="40vw" eager /></div>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 100svh; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; gap: 6vw; padding-top: var(--header); padding-bottom: 48px; }
+  .nf-title { margin: 22px 0 26px; color: var(--accent); }
+  :root[data-time='night'] .nf-title { color: var(--fg); }
+  .nf .lede { margin-bottom: 28px; }
+  .nf-plate :global(img) { width: 100%; animation: wobble 6s ease-in-out infinite; }
+  @keyframes wobble { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+  @media (max-width: 900px) { .nf { grid-template-columns: 1fr; } .nf-plate { width: 70%; justify-self: center; order: -1; margin-top: 24px; } }
+</style>

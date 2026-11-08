@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Day from '../components/home/Day.astro';
+import Signatures from '../components/home/Signatures.astro';
+import Brief from '../components/home/Brief.astro';
+import Maison from '../components/home/Maison.astro';
+import Lieu from '../components/home/Lieu.astro';
+import Avis from '../components/home/Avis.astro';
+import Venir from '../components/home/Venir.astro';
+import { useT, type Lang } from '../i18n';
+import { restaurantLd } from '../lib/jsonld';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+<Base lang={lang} page="home" title={t.meta.home.title} description={t.meta.home.description} jsonLd={restaurantLd(lang)}>
+  <Hero lang={lang} />
+  <Day lang={lang} />
+  <Signatures lang={lang} />
+  <Brief lang={lang} />
+  <Maison lang={lang} />
+  <Lieu lang={lang} />
+  <Avis lang={lang} />
+  <Venir lang={lang} />
+</Base>
+<script>
+  import '../scripts/home';
+  import '../scripts/cursor';
+</script>

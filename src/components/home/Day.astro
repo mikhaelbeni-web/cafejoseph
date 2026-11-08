@@ -1,0 +1,87 @@
+---
+import Photo from '../Photo.astro';
+import { useT, type Lang } from '../../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const d = t.home.day;
+// Colours of the day, from noon light to the velvet of the night.
+const tones = [
+  { bg: '#f4eee3', fg: '#1b2a2d', soft: '#4f5d5e', gold: '#7a5c33' },
+  { bg: '#ecd9b4', fg: '#1b2a2d', soft: '#4d4a3c', gold: '#6d4f27' },
+  { bg: '#24474f', fg: '#f4eee3', soft: '#c3d0cd', gold: '#d9b97f' },
+  { bg: '#0e1b1f', fg: '#f4eee3', soft: '#a9b8b5', gold: '#c9a66b' },
+];
+---
+<section class="day" data-day data-tones={JSON.stringify(tones)} aria-labelledby="day-title" style={`--day-bg:${tones[0].bg};--day-fg:${tones[0].fg};--day-soft:${tones[0].soft};--day-gold:${tones[0].gold}`}>
+  <div class="day-pin" data-day-pin>
+    <div class="wrap day-grid">
+      <header class="day-head">
+        <p class="label day-label"><span class="n">02</span>{" "}{d.label}</p>
+        <h2 id="day-title" class="display-l">{d.title}</h2>
+      </header>
+
+      <div class="day-clock" aria-hidden="true">
+        <svg class="day-arc" viewBox="0 0 400 210">
+          <path d="M10 200 A190 190 0 0 1 390 200" />
+          <circle r="9" cx="10" cy="200" data-day-sun />
+        </svg>
+        <span class="day-time num" data-day-clock>12:00</span>
+      </div>
+
+      <ol class="day-moments">
+        {d.moments.map((m, i) => (
+          <li class="day-moment" data-day-moment style={`--day-bg:${tones[i].bg};--day-fg:${tones[i].fg};--day-soft:${tones[i].soft};--day-gold:${tones[i].gold}`}>
+            <figure class="day-photo photo">
+              <Photo name={m.photo} alt={m.alt} sizes="(min-width: 900px) 34vw, 92vw" />
+            </figure>
+            <div class="day-text">
+              <p class="day-step num"><span>{m.time}</span><span class="day-of">{String(i + 1).padStart(2, '0')} / 04</span></p>
+              <h3 class="display-m">{m.title}</h3>
+              <p>{m.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .day { background: var(--day-bg); color: var(--day-fg); position: relative; }
+  .day-pin { padding-block: var(--section); }
+  .day-head { max-width: 760px; margin-bottom: clamp(48px, 7vw, 96px); }
+  .day-label { color: var(--day-gold); }
+  .day-label .n { color: var(--day-soft); }
+  .day-head h2 { margin-top: 22px; }
+  .day-clock { display: none; }
+  .day-moments { display: grid; gap: 0; }
+  .day-moment { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 28px var(--gutter) 44px; margin-inline: calc(var(--gutter) * -1); background: var(--day-bg); color: var(--day-fg); }
+  .day-photo { aspect-ratio: 5 / 4; }
+  .day-step { display: flex; justify-content: space-between; font-size: 13px; letter-spacing: .18em; color: var(--day-gold); margin-bottom: 12px; font-weight: 600; }
+  .day-of { color: var(--day-soft); }
+  .day-text h3 { margin-bottom: 14px; }
+  .day-text p:last-child { color: var(--day-soft); max-width: 46ch; margin: 0; }
+
+  /* Desktop with motion: the section is pinned and the day passes as you scroll (scripts/home.ts). */
+  @media (min-width: 900px) {
+    :global(.motion-ok) .day-pin { height: 100vh; min-height: 640px; padding-block: calc(var(--header) + 4vh) 6vh; display: flex; align-items: stretch; }
+    :global(.motion-ok) .day-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 0 6vw; height: 100%; }
+    :global(.motion-ok) .day-head { grid-column: 1; margin: 0; }
+    :global(.motion-ok) .day-clock { display: block; grid-column: 1; grid-row: 2; align-self: end; position: relative; }
+    :global(.motion-ok) .day-arc { width: min(30vw, 420px); overflow: visible; margin-bottom: -2vw; opacity: .9; }
+    :global(.motion-ok) .day-arc path { fill: none; stroke: var(--day-soft); stroke-width: 1; stroke-dasharray: 2 6; }
+    :global(.motion-ok) .day-arc circle { fill: var(--day-gold); }
+    :global(.motion-ok) .day-time { display: block; font-family: var(--display); font-size: clamp(110px, 15vw, 240px); line-height: .8; letter-spacing: -.03em; }
+    :global(.motion-ok) .day-moments { grid-column: 2; grid-row: 1 / span 2; position: relative; align-self: center; height: min(74vh, 720px); }
+    :global(.motion-ok) .day-moment { position: absolute; inset: 0; margin: 0; padding: 0; background: none; color: inherit; grid-template-rows: minmax(0, 1fr) auto; gap: 26px; opacity: 0; visibility: hidden; }
+    :global(.motion-ok) .day-moment:first-child { opacity: 1; visibility: visible; }
+    :global(.motion-ok) .day-photo { aspect-ratio: auto; min-height: 0; }
+    :global(.motion-ok) .day-step, :global(.motion-ok) .day-of { color: inherit; }
+    :global(.motion-ok) .day-text p:last-child { color: inherit; opacity: .78; }
+  }
+  @media (min-width: 900px) {
+    :global(html:not(.motion-ok)) .day-moments { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    :global(html:not(.motion-ok)) .day-moment { margin: 0; padding: 28px; }
+  }
+</style>

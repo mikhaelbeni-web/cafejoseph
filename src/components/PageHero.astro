@@ -1,0 +1,21 @@
+---
+// Shared opening for inner pages: numbered label, giant title, lede, optional actions.
+interface Props { label: string; title: string; lede?: string; n?: string }
+const { label, title, lede, n = '' } = Astro.props;
+---
+<header class="ph wrap">
+  <p class="label">{n && <><span class="n">{n}</span>{' '}</>}{label}</p>
+  <h1 class="display-xxl ph-title">
+    <span class="line-mask"><span data-ph-line>{title}</span></span>
+  </h1>
+  {lede && <p class="lede ph-lede">{lede}</p>}
+  <slot />
+</header>
+<style>
+  .ph { padding-top: calc(var(--header) + clamp(48px, 9vh, 120px)); padding-bottom: clamp(40px, 6vw, 80px); }
+  .ph-title { margin: 22px 0 28px; color: var(--accent); transition: color var(--t-theme) var(--ease); }
+  :root[data-time='night'] .ph-title { color: var(--fg); }
+  .ph-lede { margin-bottom: 30px; }
+  :global(.motion-ok) [data-ph-line] { transform: translateY(105%); animation: ph-rise .9s var(--ease) .1s forwards; }
+  @keyframes ph-rise { to { transform: none; } }
+</style>

@@ -1,0 +1,96 @@
+---
+import Plate from '../Plate.astro';
+import { useT, href, type Lang } from '../../i18n';
+import { dish, homeSignatures, formatPrice } from '../../data/menu';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const s = t.home.signatures;
+const items = homeSignatures.map(dish);
+const ticks = Array.from({ length: 72 }, (_, i) => i * 5);
+---
+<section class="sig theme-surface" data-sig aria-labelledby="sig-title">
+  <div class="sig-pin" data-sig-pin>
+    <div class="wrap sig-inner">
+      <header class="sig-head">
+        <p class="label"><span class="n">03</span>{" "}{s.label}</p>
+        <h2 id="sig-title" class="sig-title">{s.title}</h2>
+        <p class="sig-count num" aria-hidden="true"><span data-sig-current>01</span><span class="muted"> / {String(items.length).padStart(2, '0')}</span></p>
+      </header>
+
+      <div class="sig-track">
+      <div class="sig-dial-wrap" aria-hidden="true">
+        <svg class="sig-dial" viewBox="-100 -100 200 200" data-sig-dial>
+          <circle r="98" />
+          {ticks.map((a) => <line x1="0" y1="-98" x2="0" y2={a % 30 === 0 ? -89 : -94.5} transform={`rotate(${a})`} />)}
+        </svg>
+      </div>
+      <ol class="sig-list">
+        {items.map((d, i) => (
+          <li class="sig-item" data-sig-item>
+            <div class="sig-stage">
+              <Plate name={d.plate!} alt={`${d.name[lang]} : ${d.desc?.[lang] ?? ''}`} sizes="(min-width: 900px) 46vw, 78vw" data-sig-plate />
+            </div>
+            <div class="sig-text">
+              <p class="sig-n num">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="sig-name">{d.name[lang]}</h3>
+              {d.desc && <p class="sig-desc muted">{d.desc[lang]}</p>}
+              <div class="sig-meta">
+                <span class="sig-price num">{formatPrice(d.price, lang)}</span>
+                {d.tags?.map((tag) => <span class:list={['tag', { 'tag--signature': tag === 'signature' }]}>{t.common.tags[tag]}</span>)}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      </div>
+      <a class="btn sig-cta" href={href(lang, 'menu')}>{t.common.fullMenu} <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sig { background: var(--bg-2); position: relative; overflow: clip; }
+  .sig-pin { padding-block: var(--section); }
+  .sig-inner { position: relative; }
+  .sig-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 18px 32px; margin-bottom: 48px; }
+  .sig-head .label { grid-column: 1 / -1; }
+  .sig-title { font-size: clamp(30px, 3.4vw, 52px); line-height: 1.02; max-width: 18ch; }
+  .sig-count { font-family: var(--display); font-size: clamp(28px, 3vw, 44px); margin: 0; }
+  .sig-dial-wrap { display: none; }
+
+  /* Mobile / default: horizontal swipe, each plate turns as it slides */
+  .sig-list { display: grid; grid-auto-flow: column; grid-auto-columns: 84%; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 8px; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
+  .sig-list::-webkit-scrollbar { display: none; }
+  .sig-item { scroll-snap-align: start; display: grid; gap: 22px; }
+  .sig-stage { aspect-ratio: 1; }
+  .sig-stage :global(img) { width: 100%; height: 100%; }
+  .sig-n { font-size: 13px; letter-spacing: .2em; color: var(--gold); margin-bottom: 8px; }
+  .sig-name { font-size: clamp(38px, 10vw, 56px); line-height: .95; margin-bottom: 14px; }
+  .sig-desc { max-width: 40ch; }
+  .sig-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .sig-price { font-family: var(--display); font-size: 30px; margin-inline-end: 8px; }
+  .sig-cta { margin-top: 40px; }
+
+  /* Desktop with motion: pinned stage, plates rotate in and out with the scroll */
+  @media (min-width: 900px) {
+    :global(.motion-ok) .sig-pin { height: 100vh; min-height: 680px; padding-block: calc(var(--header) + 3vh) 4vh; }
+    :global(.motion-ok) .sig-inner { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+    :global(.motion-ok) .sig-head { margin: 0; position: relative; z-index: 2; }
+    :global(.motion-ok) .sig-track { position: relative; }
+    :global(.motion-ok) .sig-list { position: absolute; inset: 0; display: block; overflow: visible; margin: 0; padding: 0; }
+    :global(.motion-ok) .sig-dial-wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 4vw; align-items: center; position: absolute; inset: 0; pointer-events: none; }
+    :global(.motion-ok) .sig-dial { grid-column: 2; justify-self: center; width: min(76vh, 56vw); aspect-ratio: 1; overflow: visible; }
+    :global(.motion-ok) .sig-item { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 4vw; visibility: hidden; }
+    :global(.motion-ok) .sig-item:first-child { visibility: visible; }
+    :global(.motion-ok) .sig-stage { grid-column: 2; grid-row: 1; justify-self: center; width: min(64vh, 46vw); }
+    :global(.motion-ok) .sig-text { grid-column: 1; grid-row: 1; position: relative; z-index: 2; }
+    :global(.motion-ok) .sig-name { font-size: clamp(52px, 6.2vw, 108px); }
+    :global(.motion-ok) .sig-dial circle { fill: none; stroke: var(--line); stroke-width: .5; }
+    :global(.motion-ok) .sig-dial line { stroke: var(--gold); stroke-width: .5; opacity: .7; }
+    :global(.motion-ok) .sig-cta { margin: 0; justify-self: start; position: relative; z-index: 2; }
+  }
+  @media (min-width: 900px) {
+    :global(html:not(.motion-ok)) .sig-list { grid-auto-columns: calc((100% - 54px) / 4); }
+  }
+</style>

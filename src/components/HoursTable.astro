@@ -1,0 +1,35 @@
+---
+import { useT, type Lang } from '../i18n';
+interface Props { lang: Lang; compact?: boolean }
+const { lang, compact = false } = Astro.props;
+const t = useT(lang);
+---
+<div class:list={['hours', { 'hours--compact': compact }]}>
+  <dl class="hours-list">
+    {t.hours.rows.map((r) => (
+      <div class="hours-row" data-wd={r.wd.join(',')}>
+        <dt>{r.days}</dt>
+        <dd>
+          <span class="num">{r.hours}</span>
+          {r.note && !compact && <small class="muted">{r.note}</small>}
+        </dd>
+      </div>
+    ))}
+  </dl>
+  <p class="hours-note" data-week-note hidden></p>
+  <p class="hours-note hours-note--holiday" data-holiday-note hidden></p>
+</div>
+<style>
+  .hours-list { margin: 0; }
+  .hours-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); transition: border-color var(--t-theme) var(--ease); position: relative; }
+  .hours-row:last-child { border-bottom: 1px solid var(--line); }
+  .hours-row dt { font-weight: 520; }
+  .hours-row dd { margin: 0; text-align: end; display: grid; gap: 2px; }
+  .hours-row dd small { font-size: 13px; }
+  .hours-row.is-today dt::before { content: ''; position: absolute; inset-inline-start: -18px; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); transform: translateY(-50%); }
+  .hours-row.is-today { color: var(--accent); }
+  .hours-note { margin: 16px 0 0; font-size: 15px; color: var(--fg-soft); }
+  .hours-note--holiday { color: var(--gold); }
+  .hours--compact .hours-row { padding: 9px 0; font-size: 15px; }
+  .hours--compact .hours-row.is-today dt::before { display: none; }
+</style>

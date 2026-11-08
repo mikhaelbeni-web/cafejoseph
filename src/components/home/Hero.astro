@@ -1,0 +1,118 @@
+---
+import Plate from '../Plate.astro';
+import Status from '../Status.astro';
+import { useT, href, type Lang } from '../../i18n';
+import { dish, formatPrice } from '../../data/menu';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const h = t.home.hero;
+const burratina = dish('burratina');
+
+// Terrace string lights (night only): three swags, bulbs computed along quadratic curves.
+const swags = [[[-20, 14], [230, 104], [480, 14]], [[480, 14], [730, 92], [980, 14]], [[980, 14], [1220, 104], [1460, 14]]];
+const q = (p0: number[], p1: number[], p2: number[], s: number) => [0, 1].map((k) => (1 - s) ** 2 * p0[k] + 2 * (1 - s) * s * p1[k] + s ** 2 * p2[k]);
+const bulbs = swags.flatMap(([a, b, c]) => Array.from({ length: 8 }, (_, i) => q(a, b, c, (i + 0.5) / 8)));
+---
+<section class="hero theme-surface" data-hero aria-labelledby="hero-title">
+  <svg class="garland" viewBox="0 0 1440 130" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+    {swags.map(([a, b, c]) => <path d={`M${a[0]} ${a[1]} Q${b[0]} ${b[1]} ${c[0]} ${c[1]}`} />)}
+    {bulbs.map(([x, y], i) => (
+      <g class="bulb" style={`--i:${i}`}>
+        <line x1={x} y1={y} x2={x} y2={y + 7} />
+        <circle cx={x} cy={y + 12} r="4.6" />
+      </g>
+    ))}
+  </svg>
+
+  <div class="hero-inner wrap">
+    <div class="hero-copy">
+      <p class="hero-eyebrow" data-hero-in>{h.eyebrow}</p>
+      <h1 id="hero-title" class="hero-title display-xxl">
+        {h.title.map((line, i) => <>{i > 0 && ' '}<span class="line-mask"><span data-hero-line style={`--d:${i}`}>{line}</span></span></>)}
+      </h1>
+      <p class="hero-lede lede">{h.lede}</p>
+      <div class="hero-live">
+        <Status text={t.status.loading} />
+        <span class="tag">{t.common.kosher}</span>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-hero">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href={href(lang, 'menu')}>{t.common.seeMenu}</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-plate">
+        <div class="hero-plate-rot" data-hero-plate>
+          <Plate name="pizza-burratina" alt={`${burratina.name[lang]}, ${burratina.desc?.[lang] ?? ''}`} eager sizes="(min-width: 900px) 62vw, 110vw" />
+        </div>
+      </div>
+    </div>
+
+    <ul class="hero-facts">
+      {h.facts.map((f, i) => (
+        <li><span class="num hero-fact-k">{f.k}</span><span class="muted">{f.v}</span></li>
+      ))}
+      <li class="hero-caption" aria-hidden="true"><span class="hero-fact-k">{burratina.name[lang]} <span class="num">· {formatPrice(burratina.price, lang)}</span></span><span class="muted hero-caption-sub"><i></i>{t.common.tags.bestseller}</span></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: 100svh; padding-top: calc(var(--header) + clamp(28px, 6vh, 72px)); overflow: clip; background: var(--bg); }
+  .hero-inner { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: 1fr auto; min-height: calc(100svh - var(--header) - clamp(28px, 6vh, 72px)); }
+  .hero-copy { position: relative; z-index: 2; align-self: center; padding-bottom: 6vh; }
+  .hero-eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: var(--gold); margin-bottom: clamp(18px, 3vh, 32px); transition: color var(--t-theme) var(--ease); }
+  .hero-title { color: var(--accent); margin-bottom: clamp(22px, 3.4vh, 40px); transition: color var(--t-theme) var(--ease); }
+  :root[data-time='night'] .hero-title { color: var(--fg); }
+  .hero-title .line-mask:last-child > span { padding-inline-start: .55em; font-style: italic; }
+  :root[lang='he'] .hero-title .line-mask:last-child > span { font-style: normal; }
+  :root[lang='he'] .hero-title { font-size: clamp(56px, 8.4vw, 150px); }
+  .hero-lede { margin-bottom: 26px; }
+  .hero-live { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 26px; }
+  .hero-live :global(.status) { margin: 0; }
+
+  .hero-visual { position: relative; z-index: 1; }
+  .hero-plate { --size: min(50vw, 74vh, 900px); position: absolute; top: 50%; inset-inline-start: 0; width: var(--size); aspect-ratio: 1; margin-top: calc(var(--size) * -.53); }
+  .hero-plate-rot, .hero-plate :global(img) { width: 100%; height: 100%; }
+
+  .hero-facts { grid-column: 1 / -1; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.2fr); gap: 24px; padding-block: 22px 28px; border-top: 1px solid var(--line); font-size: 14px; transition: border-color var(--t-theme) var(--ease); }
+  .hero-facts li { display: grid; gap: 2px; }
+  .hero-fact-k { font-family: var(--display); font-size: 22px; line-height: 1.1; }
+  .hero-caption { text-align: end; justify-items: end; }
+  .hero-caption-sub { display: inline-flex; align-items: center; gap: 10px; }
+  .hero-caption-sub i { width: 40px; height: 1px; background: currentColor; opacity: .6; }
+  .hero-scroll { display: flex !important; align-items: center; gap: 12px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-soft); }
+  .hero-scroll i { width: 1px; height: 36px; background: currentColor; transform-origin: top; animation: drip 2.2s var(--ease) infinite; }
+  @keyframes drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  /* Night: terrace lights */
+  .garland { position: absolute; z-index: 3; top: calc(var(--header) - 6px); left: 0; width: 100%; height: clamp(70px, 9vw, 130px); pointer-events: none; opacity: 0; transition: opacity 1s var(--ease); }
+  .garland path, .garland line { fill: none; stroke: color-mix(in srgb, var(--fg) 45%, transparent); stroke-width: 1; }
+  .garland circle { fill: #ffd38a; opacity: .15; transition: opacity .5s var(--ease); transition-delay: calc(var(--i) * 45ms + .3s); }
+  :root[data-time='night'] .garland { opacity: 1; }
+  :root[data-time='night'] .garland circle { opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 196, 110, .95)) drop-shadow(0 0 14px rgba(255, 180, 90, .55)); animation: twinkle 5s ease-in-out infinite; animation-delay: calc(var(--i) * -.37s); }
+  @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .72; } }
+
+  /* Intro (only with JS + motion allowed). Useful info is never hidden. */
+  :global(.motion-ok) [data-hero-line] { transform: translateY(105%); animation: rise .9s var(--ease) forwards; animation-delay: calc(.15s + var(--d) * .12s); }
+  :global(.motion-ok) .hero-eyebrow { opacity: 0; animation: fade .9s var(--ease) .1s forwards; }
+  :global(.motion-ok) .hero-plate :global(img) { opacity: 0; transform: rotate(-70deg) scale(.82); animation: plateIn 1.6s var(--ease) .2s forwards; }
+  @keyframes rise { to { transform: none; } }
+  @keyframes fade { to { opacity: 1; } }
+  @keyframes plateIn { to { opacity: 1; transform: none; } }
+
+  @media (max-width: 900px) {
+    .hero { min-height: 0; }
+    .hero-inner { grid-template-columns: 1fr; grid-template-rows: auto; min-height: 0; }
+    .hero-copy { padding-bottom: 0; }
+    .hero-visual { height: 94vw; margin-top: 12px; }
+    .hero-plate { width: 94vw; top: 0; margin-top: 0; inset-inline-start: auto; inset-inline-end: -26vw; }
+    .hero-caption { display: none !important; }
+    .hero-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .hero-fact-k { font-size: 18px; }
+    .hero-scroll { display: none !important; }
+  }
+  @media (max-width: 420px) { .hero-facts { font-size: 12.5px; } }
+</style>

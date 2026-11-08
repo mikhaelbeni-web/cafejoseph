@@ -1,0 +1,22 @@
+---
+import { useT, type Lang } from '../i18n';
+interface Props { lang: Lang; class?: string; withLabel?: boolean }
+const { lang, class: cls = '', withLabel = false } = Astro.props;
+const t = useT(lang);
+---
+<button class={`tt ${cls}`} type="button" data-time-toggle data-to-night={t.nav.toNight} data-to-day={t.nav.toDay} aria-label={t.nav.toNight}>
+  <svg class="tt-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <g class="tt-sun"><circle cx="12" cy="12" r="4.2" /><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" /></g></g>
+    <path class="tt-moon" d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z" />
+  </svg>
+  {withLabel && <span class="tt-label" data-time-label>{t.nav.toNight}</span>}
+</button>
+<style>
+  .tt { display: inline-flex; align-items: center; gap: 10px; min-width: 40px; min-height: 40px; justify-content: center; border-radius: 99px; color: var(--fg); font-size: 14px; }
+  .tt-icon { width: 20px; height: 20px; fill: currentColor; overflow: visible; }
+  .tt-sun, .tt-moon { transition: transform .9s var(--ease), opacity .6s var(--ease); transform-origin: 12px 12px; }
+  .tt-moon { opacity: 0; transform: rotate(-60deg) scale(.6); }
+  :root[data-time='night'] .tt-sun { opacity: 0; transform: rotate(90deg) scale(.6); }
+  :root[data-time='night'] .tt-moon { opacity: 1; transform: none; }
+  @media (hover: hover) { .tt:hover .tt-icon { transform: rotate(-12deg); } .tt-icon { transition: transform .5s var(--ease); } }
+</style>

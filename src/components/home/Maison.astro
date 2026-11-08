@@ -1,0 +1,52 @@
+---
+import Photo from '../Photo.astro';
+import { useT, href, type Lang } from '../../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const m = t.home.maison;
+---
+<section class="maison section theme-surface" aria-labelledby="maison-title">
+  <div class="wrap">
+    <div class="maison-grid">
+      <div class="maison-copy">
+        <p class="label"><span class="n">05</span>{" "}{m.label}</p>
+        <h2 id="maison-title" class="display-l" data-reveal>{m.title}</h2>
+        {m.text.map((p, i) => <p class="maison-p" data-reveal={i + 1}>{p}</p>)}
+        <a class="btn" href={href(lang, 'story')}>{t.common.readStory} <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <figure class="maison-photo photo" data-clip-reveal>
+        <Photo name="table-partagee-vue-ensemble" alt={t.home.day.moments[2].alt} sizes="(min-width: 900px) 52vw, 100vw" />
+      </figure>
+    </div>
+    <ol class="maison-values">
+      {m.values.map((v, i) => (
+        <li data-reveal={i}>
+          <span class="num maison-n">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="display-m">{v.title}</h3>
+          <p class="muted">{v.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .maison-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 110px); align-items: center; }
+  .maison-copy h2 { margin: 24px 0 32px; }
+  .maison-p { max-width: 44ch; font-size: clamp(17px, 1.3vw, 19px); }
+  .maison-copy .btn { margin-top: 16px; }
+  .maison-photo { aspect-ratio: 5 / 4; border-radius: 4px; }
+  :global(.motion-ok) .maison-photo { clip-path: inset(12% 12% 12% 12% round 4px); }
+  :global(.motion-ok) .maison-photo :global(img) { transform: scale(1.18); }
+  .maison-values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3vw, 48px); margin-top: clamp(72px, 9vw, 140px); }
+  .maison-values li { border-top: 1px solid var(--line); padding-top: 24px; transition: border-color var(--t-theme) var(--ease); }
+  .maison-n { display: block; font-size: 13px; letter-spacing: .2em; color: var(--gold); margin-bottom: 18px; }
+  .maison-values h3 { margin-bottom: 12px; }
+  .maison-values p { margin: 0; max-width: 34ch; }
+  @media (max-width: 900px) {
+    .maison-grid { grid-template-columns: 1fr; }
+    .maison-photo { order: -1; }
+    .maison-values { grid-template-columns: 1fr; }
+  }
+</style>
