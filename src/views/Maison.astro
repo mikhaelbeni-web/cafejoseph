@@ -5,9 +5,12 @@ import Photo from '../components/Photo.astro';
 import Plate from '../components/Plate.astro';
 import { useT, href, type Lang } from '../i18n';
 import { dish } from '../data/menu';
+import { bookingLink } from '../lib/booking';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
+const bk = bookingLink(lang);
+const bookAttrs = { href: bk.href, target: bk.target, rel: bk.rel };
 const s = t.storyPage;
 const gallery = [
   { name: 'carpaccio-thon', alt: 'Carpaccio' },
@@ -71,7 +74,7 @@ const gallery = [
         ))}
       </ul>
       <div class="btn-row story-cta">
-        <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-maison">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--primary" {...bookAttrs} data-track="reserver-maison">{t.common.book} <span class="arrow" aria-hidden="true">→</span>{bk.external && <span class="sr-only"> {t.common.newTab}</span>}</a>
         <a class="btn" href={href(lang, 'menu')}>{t.common.seeMenu}</a>
       </div>
     </div>

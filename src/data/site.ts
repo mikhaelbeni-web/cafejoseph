@@ -23,6 +23,14 @@ export const site = {
   since: 2024,
   // Opening hours, Paris time. Saturday opens after Shabbat (see src/lib/hours.ts).
   shabbatOffsetMinutes: 30,
+  // Online booking (L'Addition Réservation, set up in the L'Addition partner space).
+  // TODO(owner): paste the public booking URL, e.g. 'https://reservation.laddition.com/booking/…'.
+  // Empty: the site keeps its WhatsApp request form. Filled: every "Réserver" button leads to L'Addition,
+  // and phone + WhatsApp stay on the booking page as a fallback.
+  bookingUrl: '',
+  // true: show the L'Addition module inside the booking page instead of opening a new tab.
+  // Only switch it on after checking that L'Addition lets its page be embedded (otherwise the frame stays blank).
+  bookingEmbed: false,
   // TODO(owner): set to true on launch day (final domain, full menu, legal mentions filled in).
   // While false, every page carries <meta name="robots" content="noindex"> so search engines skip the work-in-progress site.
   launched: false,

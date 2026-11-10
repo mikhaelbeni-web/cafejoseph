@@ -6,14 +6,42 @@ import Status from '../components/Status.astro';
 import Plate from '../components/Plate.astro';
 import { useT, type Lang } from '../i18n';
 import { site } from '../data/site';
+import { bookingOnline, bookingEmbedded, whatsappLink } from '../lib/booking';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
 const b = t.bookPage;
+const o = b.online;
 ---
 <Base lang={lang} page="book" title={t.meta.book.title} description={t.meta.book.description}>
-  <PageHero label={b.label} title={b.title} lede={b.lede} />
+  <PageHero label={b.label} title={b.title} lede={bookingOnline ? o.lede : b.lede} />
   <section class="wrap book">
+    {bookingOnline ? (
+    <div class="book-online">
+      {bookingEmbedded ? (
+        <>
+          <div class="book-frame">
+            <iframe src={site.bookingUrl} title={o.frameTitle} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="payment"></iframe>
+          </div>
+          <p class="book-note muted"><a class="link" href={site.bookingUrl} target="_blank" rel="noopener" data-track="reserver-laddition">{o.openTab}</a></p>
+        </>
+      ) : (
+        <div class="book-go-wrap">
+          <a class="btn btn--primary book-go" href={site.bookingUrl} target="_blank" rel="noopener" data-track="reserver-laddition">{o.cta} <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> {t.common.newTab}</span></a>
+          <p class="book-note muted">{o.note}</p>
+        </div>
+      )}
+      <div class="book-alt">
+        <h2 class="label bare">{o.altTitle}</h2>
+        <p>{o.altText}</p>
+        <div class="book-actions">
+          <a class="btn" href={`tel:${site.phoneE164}`} data-track="appel">{b.callCta} · <bdi class="num">{site.phoneDisplay}</bdi></a>
+          <a class="btn" href={whatsappLink(o.waMessage)} target="_blank" rel="noopener" data-track="whatsapp">{o.whatsapp}<span class="sr-only"> {t.common.newTab}</span></a>
+        </div>
+        <p class="field-hint">{b.groups}</p>
+      </div>
+    </div>
+    ) : (
     <form class="book-form" data-book novalidate data-wa={site.whatsappE164}>
       <div class="field">
         <label for="b-date">{b.date}</label>
@@ -57,6 +85,7 @@ const b = t.bookPage;
       <p class="book-confirm muted field--wide">{b.confirm}</p>
       <p class="book-sent field--wide" role="status" data-sent hidden>{b.sent}</p>
     </form>
+    )}
 
     <aside class="book-aside">
       <div class="book-plate" aria-hidden="true"><Plate name="carpaccio-poisson-truffe" alt="" sizes="(min-width: 900px) 26vw, 60vw" /></div>
@@ -95,6 +124,15 @@ const b = t.bookPage;
   .book-submit svg { flex: none; }
   .book-confirm { font-size: 14px; margin: 0; }
   .book-sent { margin: 0; padding: 14px 18px; border-radius: 4px; background: color-mix(in srgb, #4f9a68 14%, transparent); }
+  .book-online { display: grid; gap: 40px; align-content: start; }
+  .book-go-wrap { display: grid; gap: 14px; justify-items: start; }
+  .book-go { min-height: 64px; padding-inline: 36px; font-size: 17px; }
+  .book-note { margin: 0; font-size: 14px; }
+  .book-frame { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: #fff; }
+  .book-frame iframe { display: block; width: 100%; height: min(860px, 86vh); border: 0; }
+  .book-alt { display: grid; gap: 14px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .book-alt p { margin: 0; }
+  .book-alt .book-actions { margin-top: 4px; }
   .book-aside { position: sticky; top: calc(var(--header) + 32px); display: grid; gap: 18px; }
   .book-plate { width: min(260px, 70%); margin-bottom: 8px; }
   .book-plate :global(img) { width: 100%; animation: spin 70s linear infinite; }
@@ -107,6 +145,7 @@ const b = t.bookPage;
     .book-plate { display: none; }
     .book-actions .btn { width: 100%; }
     .book-actions > span { display: none; }
+    .book-go-wrap, .book-go { width: 100%; }
   }
 </style>
 <script>
