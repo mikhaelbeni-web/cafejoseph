@@ -28,9 +28,23 @@ npm run build    # recalcule les horaires de Chabbat puis génère dist/
 Le navigateur en déduit le statut « ouvert / fermé », l'heure de fermeture du vendredi,
 la réouverture du samedi soir (havdala + 30 min) et les créneaux du formulaire de réservation.
 
+## Réservation en ligne (L'Addition Réservation)
+
+1. Activez le module dans l'espace partenaires L'Addition et copiez l'adresse publique de la page
+   de réservation (du type `https://reservation.laddition.com/booking/…`).
+2. Collez-la dans `bookingUrl`, dans `src/data/site.ts`.
+
+Tous les boutons « Réserver » ouvrent alors L'Addition dans un nouvel onglet. La page Réserver
+garde le téléphone et WhatsApp en solution de repli, et le formulaire WhatsApp disparaît.
+Tant que `bookingUrl` est vide, le site garde le formulaire WhatsApp.
+
+Pour afficher le module directement dans la page Réserver, passez `bookingEmbed` à `true`, puis
+vérifiez que le module s'affiche bien : si L'Addition interdit l'intégration, le cadre reste vide
+et il faut revenir à `false`.
+
 ## Reste à fournir avant la mise en ligne
 
-Voir les `TODO(owner)` dans `src/data/` : numéro WhatsApp, mention exacte de la téouda,
+Voir les `TODO(owner)` dans `src/data/` : adresse de réservation L'Addition, numéro WhatsApp, mention exacte de la téouda,
 carte complète avec prix, mentions légales, relecture de l'hébreu, photos de salle et de terrasse.
 
 Tant que `launched` vaut `false` dans `src/data/site.ts`, toutes les pages portent une balise

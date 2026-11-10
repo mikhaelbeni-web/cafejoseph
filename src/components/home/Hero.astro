@@ -3,9 +3,12 @@ import Plate from '../Plate.astro';
 import Status from '../Status.astro';
 import { useT, href, type Lang } from '../../i18n';
 import { dish, formatPrice } from '../../data/menu';
+import { bookingLink } from '../../lib/booking';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
+const bk = bookingLink(lang);
+const bookAttrs = { href: bk.href, target: bk.target, rel: bk.rel };
 const h = t.home.hero;
 const burratina = dish('burratina');
 
@@ -37,7 +40,7 @@ const bulbs = swags.flatMap(([a, b, c]) => Array.from({ length: 8 }, (_, i) => q
         <span class="tag">{t.common.kosher}</span>
       </div>
       <div class="btn-row">
-        <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-hero">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--primary" {...bookAttrs} data-track="reserver-hero">{t.common.book} <span class="arrow" aria-hidden="true">→</span>{bk.external && <span class="sr-only"> {t.common.newTab}</span>}</a>
         <a class="btn" href={href(lang, 'menu')}>{t.common.seeMenu}</a>
       </div>
     </div>

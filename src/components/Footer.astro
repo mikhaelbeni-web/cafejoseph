@@ -4,16 +4,19 @@ import HoursTable from './HoursTable.astro';
 import LangSwitch from './LangSwitch.astro';
 import { useT, href, type Lang, type PageKey } from '../i18n';
 import { site } from '../data/site';
+import { bookingLink } from '../lib/booking';
 interface Props { lang: Lang; page: PageKey | '404' }
 const { lang, page } = Astro.props;
 const t = useT(lang);
+const bk = bookingLink(lang);
+const bookAttrs = { href: bk.href, target: bk.target, rel: bk.rel };
 ---
 <footer class="ft">
   <div class="wrap">
     <div class="ft-grid">
       <div class="ft-intro">
         <p class="ft-tag">{t.footer.tagline}</p>
-        <a class="btn btn--primary" href={href(lang, 'book')} data-track="reserver-footer">{t.common.book} <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--primary" {...bookAttrs} data-track="reserver-footer">{t.common.book} <span class="arrow" aria-hidden="true">→</span>{bk.external && <span class="sr-only"> {t.common.newTab}</span>}</a>
       </div>
       <div>
         <h2 class="label bare">{t.footer.visit}</h2>

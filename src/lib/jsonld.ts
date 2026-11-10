@@ -1,5 +1,6 @@
 import { site } from '../data/site';
 import { ROUTES, type Lang } from '../i18n';
+import { bookingOnline } from './booking';
 
 // schema.org Restaurant. Saturday is left out on purpose: it opens at the end of Shabbat, which moves every week.
 export function restaurantLd(lang: Lang) {
@@ -16,7 +17,8 @@ export function restaurantLd(lang: Lang) {
     servesCuisine: ['Italian', 'Mediterranean', 'Kosher'],
     address: { '@type': 'PostalAddress', streetAddress: site.street, postalCode: site.postalCode, addressLocality: site.city, addressCountry: site.country },
     hasMenu: new URL(ROUTES[lang].menu, site.url).href,
-    acceptsReservations: true,
+    // schema.org accepts a URL here: Google can then show a direct booking link.
+    acceptsReservations: bookingOnline ? site.bookingUrl : true,
     openingHoursSpecification: [
       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '12:00', closes: '23:59' },
       { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday', opens: '12:00', closes: '17:00' },

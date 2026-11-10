@@ -2,11 +2,13 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import { useT, type Lang } from '../i18n';
+import { bookingOnline } from '../lib/booking';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
 const l = t.legalPage;
 const mark = (s: string) => s.replace(/\[([^\]]+)\]/g, '<mark>$1</mark>');
+const fill = (s: string) => (s === '{booking}' ? (bookingOnline ? l.booking.online : l.booking.offline) : s);
 ---
 <Base lang={lang} page="legal" title={t.meta.legal.title} description={t.meta.legal.description}>
   <PageHero label={l.label} title={l.title} />
@@ -15,7 +17,7 @@ const mark = (s: string) => s.replace(/\[([^\]]+)\]/g, '<mark>$1</mark>');
       <section class="legal-sec">
         <p class="num legal-n">{String(i + 1).padStart(2, '0')}</p>
         <h2 class="display-m">{s.title}</h2>
-        <ul>{s.lines.map((line) => <li set:html={mark(line)} />)}</ul>
+        <ul>{s.lines.map((line) => <li set:html={mark(fill(line))} />)}</ul>
       </section>
     ))}
   </div>

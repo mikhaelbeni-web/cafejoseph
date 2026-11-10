@@ -4,9 +4,12 @@ import Status from './Status.astro';
 import LangSwitch from './LangSwitch.astro';
 import TimeToggle from './TimeToggle.astro';
 import { useT, href, type Lang, type PageKey } from '../i18n';
+import { bookingLink } from '../lib/booking';
 interface Props { lang: Lang; page: PageKey | '404' }
 const { lang, page } = Astro.props;
 const t = useT(lang);
+const bk = bookingLink(lang);
+const bookAttrs = { href: bk.href, target: bk.target, rel: bk.rel };
 ---
 <header class="hd theme-surface" data-header>
   <div class="hd-inner wrap">
@@ -17,7 +20,7 @@ const t = useT(lang);
       <Status variant="short" class="hd-status" text={t.status.loading} />
       <LangSwitch lang={lang} page={page} class="hd-lang" />
       <TimeToggle lang={lang} class="hd-time" />
-      {page !== 'book' && <a class="btn btn--primary btn--small hd-book" href={href(lang, 'book')} data-track="reserver-header">{t.common.bookShort}</a>}
+      {page !== 'book' && <a class="btn btn--primary btn--small hd-book" {...bookAttrs} data-track="reserver-header">{t.common.bookShort}{bk.external && <span class="sr-only"> {t.common.newTab}</span>}</a>}
       <button class="hd-menu" type="button" data-menu-open aria-expanded="false" aria-controls="menu-overlay" aria-label={t.nav.open}>
         <span class="hd-menu-icon" aria-hidden="true"><i></i><i></i></span>
         <span class="hd-menu-label">{t.nav.open}</span>
