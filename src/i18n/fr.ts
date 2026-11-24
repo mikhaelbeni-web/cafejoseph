@@ -4,9 +4,9 @@ export const fr = {
   name: 'Français',
   short: 'FR',
   meta: {
-    home: { title: 'Café Joseph · Restaurant italien casher, parc Monceau, Paris 17e', description: 'Restaurant italien casher laitier au 48 rue de Prony, face au parc Monceau. Service continu de midi à minuit, jusqu’à 2 h le samedi soir. Réservation par téléphone ou WhatsApp.' },
-    menu: { title: 'La carte · Café Joseph, restaurant italien casher à Paris 17e', description: 'Burrata, carpaccios, pizzas, pâtes à la truffe, poké : la carte du Café Joseph, restaurant italien casher laitier près du parc Monceau.' },
-    story: { title: 'La maison · Café Joseph', description: 'Café Joseph, la maison de Joseph Tibi, fondateur de Tib’s : plus de trente ans de table casher à Paris, désormais face au parc Monceau.' },
+    home: { title: 'Café Joseph · Restaurant italien casher, parc Monceau, Paris 17e', description: 'Restaurant italien casher halavi au 48 rue de Prony, face au parc Monceau. Service continu de midi à minuit, jusqu’à 2 h le samedi soir. Réservation par téléphone ou WhatsApp.' },
+    menu: { title: 'La carte · Café Joseph, restaurant italien casher à Paris 17e', description: 'Burrata, carpaccios, pizzas, pâtes à la truffe, poké : la carte du Café Joseph, restaurant italien casher halavi près du parc Monceau.' },
+    story: { title: 'La maison · Café Joseph', description: 'Café Joseph, la nouvelle adresse de la maison Tib’s : plus de trente ans de table casher à Paris, désormais face au parc Monceau.' },
     book: { title: 'Réserver une table · Café Joseph', description: 'Réservez votre table au Café Joseph, 48 rue de Prony, Paris 17e : choisissez un créneau et envoyez votre demande par WhatsApp ou par téléphone.' },
     legal: { title: 'Mentions légales · Café Joseph', description: 'Mentions légales et informations sur les données personnelles du site du Café Joseph.' },
     notFound: { title: 'Page introuvable · Café Joseph', description: 'Cette page n’existe pas.' },
@@ -17,7 +17,7 @@ export const fr = {
     toNight: 'Voir la version nuit', toDay: 'Voir la version jour', today: 'Aujourd’hui',
   },
   common: {
-    cuisine: 'Restaurant italien', kosher: 'Casher laitier', district: 'Paris 17e', metro: 'Métro Wagram ou Monceau',
+    cuisine: 'Restaurant italien', kosher: 'Casher halavi', district: 'Paris 17e', metro: 'Métro Wagram ou Monceau',
     book: 'Réserver une table', bookShort: 'Réserver', seeMenu: 'Voir la carte', fullMenu: 'Toute la carte',
     directions: 'Itinéraire', delivery: 'Livraison Uber Eats', instagram: 'Instagram', call: 'Appeler',
     readStory: 'Lire l’histoire', newTab: '(nouvel onglet)',
@@ -54,11 +54,11 @@ export const fr = {
     hero: {
       eyebrow: 'Monceau, Paris.',
       title: ['Trente ans', 'de table.'],
-      lede: 'Restaurant italien casher laitier, à l’angle de la rue de Prony, face au parc Monceau. Service continu, du déjeuner au dernier verre.',
+      lede: 'Restaurant italien casher halavi, à l’angle de la rue de Prony, face au parc Monceau. Service continu, du déjeuner au dernier verre.',
       facts: [
         { k: '12 h – 00 h', v: 'Service continu' },
         { k: '2 h', v: 'Le samedi soir' },
-        { k: 'Casher', v: 'Laitier' },
+        { k: 'Casher', v: 'Halavi' },
       ],
       scroll: 'Défiler',
       plateCaption: 'Burratina',
@@ -68,18 +68,18 @@ export const fr = {
       title: 'Une table, du déjeuner à la nuit.',
       moments: [
         { time: '12:00', title: 'Le déjeuner', text: 'Les bureaux du quartier, une table au soleil, un poké ou des pâtes servis vite et bien. On repart à l’heure.', photo: 'poke-bowl-saumon', alt: 'Poké au saumon, mangue, edamame et avocat' },
-        { time: '17:00', title: 'L’apéritif en terrasse', text: 'Le parc à deux pas, des frites à la truffe et un carpaccio à partager. La lumière baisse doucement.', photo: 'frites-truffe-parmesan', alt: 'Frites à la truffe et au parmesan' },
+        { time: '17:00', title: 'L’apéritif en terrasse', text: 'Le parc à deux pas, des frites à la truffe et un carpaccio à partager.', photo: 'frites-truffe-parmesan', alt: 'Frites à la truffe et au parmesan' },
         { time: '20:30', title: 'Le dîner', text: 'Les familles, les amis, les grandes tablées. Burrata, pizzas, linguine à la truffe, tout au milieu de la table.', photo: 'table-partagee-vue-ensemble', alt: 'Une table partagée : pizza burrata, carpaccio, cigares au chèvre, frites' },
         { time: '23:30', title: 'Tard le soir', text: 'Quand le quartier s’endort, la salle reste ouverte : jusqu’à minuit en semaine, jusqu’à 2 h le samedi soir.', photo: 'sashimi-saumon-riz', alt: 'Sashimi de saumon et riz sur ardoise' },
       ],
     },
     signatures: { label: 'Les incontournables', title: 'Quatre assiettes qui font la maison.', of: 'sur' },
-    carte: { label: 'La carte, en bref', title: 'Ce que l’on vient chercher.', hint: 'Survolez un plat pour le voir.', hintTouch: 'Touchez un plat pour le voir.', note: 'Casher laitier · plats végétariens signalés' },
+    carte: { label: 'La carte, en bref', title: 'Ce que l’on vient chercher.', hint: 'Survolez un plat pour le voir.', hintTouch: 'Touchez un plat pour le voir.', note: 'Casher halavi · plats végétariens signalés' },
     maison: {
       label: 'La maison',
       title: 'Joseph, avant d’être un café.',
       text: [
-        'Il y a plus de trente ans, Joseph Tibi ouvrait Tib’s, rue Manin, dans le 19e : l’une des plus anciennes tables casher de Paris.',
+        'Il y a plus de trente ans, la maison ouvrait Tib’s, rue Manin, dans le 19e : l’une des plus anciennes tables casher de Paris.',
         'En 2024, la maison s’installe dans le 17e, à l’angle de la rue de Prony, et prend le nom de son fondateur. Même exigence, une cuisine plus italienne, une adresse face au parc Monceau.',
       ],
       values: [
@@ -111,13 +111,13 @@ export const fr = {
   menuPage: {
     label: 'La carte',
     title: 'La carte.',
-    lede: 'Cuisine italienne et méditerranéenne, poissons crus et pizzas. Restaurant casher laitier : ni viande ni volaille.',
+    lede: 'Cuisine italienne et méditerranéenne, poissons crus et pizzas. Restaurant casher halavi.',
     filters: { all: 'Tout', veg: 'Végétarien', signature: 'Signatures' },
     filterLabel: 'Filtrer la carte',
     categories: 'Catégories',
     draft: 'Aperçu : la carte complète (salades, sushis, desserts, boissons) et les prix manquants arrivent avec la carte en salle.',
     empty: 'Aucun plat de cette catégorie ne correspond au filtre.',
-    notes: ['Prix en euros, service compris.', 'Informations sur les allergènes disponibles auprès de notre équipe.', 'Établissement casher laitier.'],
+    notes: ['Prix en euros, service compris.', 'Informations sur les allergènes disponibles auprès de notre équipe.', 'Établissement casher halavi.'],
     deliveryTitle: 'La carte, chez vous.',
     deliveryText: 'Une partie de la carte est disponible en livraison sur Uber Eats.',
   },
@@ -126,12 +126,12 @@ export const fr = {
     title: 'La maison.',
     lede: 'Un fondateur, deux adresses, et une même idée de la table : généreuse, soignée, casher.',
     chapters: [
-      { k: 'Rue Manin, 19e', title: 'Tib’s', text: ['Joseph Tibi ouvre Tib’s rue Manin, dans le 19e arrondissement, il y a plus de trente ans. La table casher laitière devient une adresse fidèle du quartier, et l’une des plus anciennes de Paris.'] },
+      { k: 'Rue Manin, 19e', title: 'Tib’s', text: ['Tib’s ouvre rue Manin, dans le 19e arrondissement, il y a plus de trente ans. La table casher halavi devient une adresse fidèle du quartier, et l’une des plus anciennes de Paris.'] },
       { k: 'Rue de Prony, 17e', title: 'Café Joseph', text: ['En 2024, la maison ouvre une nouvelle adresse au 48 rue de Prony, à l’angle, face au parc Monceau. Elle porte cette fois le prénom de son fondateur.', 'La carte penche vers l’Italie : burrata, carpaccios, pizzas, pâtes à la truffe, sans oublier les poissons crus et les classiques de brasserie.'] },
     ],
     valuesTitle: 'Ce qui ne change pas.',
     kosherTitle: 'Cacheroute',
-    kosherText: 'Café Joseph est un restaurant casher laitier : la carte ne comporte ni viande ni volaille. Pour toute question sur la cacheroute, notre équipe vous répond au 01 86 04 20 92.',
+    kosherText: 'Café Joseph est un restaurant casher halavi. Pour toute question sur la cacheroute, notre équipe vous répond au 01 86 04 20 92.',
     galleryTitle: 'À table.',
   },
   bookPage: {
@@ -163,7 +163,7 @@ export const fr = {
   },
   notFound: { label: 'Erreur 404', title: 'Cette table n’est pas dressée.', text: 'La page que vous cherchez n’existe pas ou a changé d’adresse.', back: 'Retour à l’accueil' },
   footer: {
-    tagline: 'Restaurant italien casher laitier, face au parc Monceau.',
+    tagline: 'Restaurant italien casher halavi, face au parc Monceau.',
     explore: 'Explorer', visit: 'Venir', follow: 'Suivre', hours: 'Horaires',
     rights: '© 2026 Café Joseph. Tous droits réservés.',
   },
