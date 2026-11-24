@@ -1,6 +1,6 @@
 # Café Joseph — site
 
-Site du Café Joseph, restaurant italien casher laitier, 48 rue de Prony, Paris 17e.
+Site du Café Joseph, restaurant italien casher halavi, 48 rue de Prony, Paris 17e.
 Astro (pages statiques) · GSAP pour les animations de l'accueil · trois langues (FR, EN, HE en miroir).
 
 ## Lancer en local
